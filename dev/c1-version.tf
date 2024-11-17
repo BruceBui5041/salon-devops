@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -17,3 +21,4 @@ provider "aws" {
 Note-1:  AWS Credentials Profile (profile = "default") configured on your local desktop terminal  
 $HOME/.aws/credentials
 */
+provider "tls" {}

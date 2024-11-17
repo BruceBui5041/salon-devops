@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - project-network
+
+  salon-be:
+    container_name: salon-be
+    build:
+      context: .
+      dockerfile: salon-be.Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+        - REPO_URL=${REPO_URL}
+    ports:
+      - 2999:2999
+      - 50051:50051
+    networks:
+      - project-network
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  project-network:
+    name: project-network
+    driver: bridge

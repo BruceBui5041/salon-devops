@@ -41,6 +41,27 @@ resource "aws_security_group" "vpc-web" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    description = "Allow Port 2999"
+    from_port   = 2999
+    to_port     = 2999
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Allow Port 50051"
+    from_port   = 50051
+    to_port     = 50051
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Allow Port 3306"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     description = "Allow all ip and ports outbound"
     from_port   = 0
@@ -52,5 +73,8 @@ resource "aws_security_group" "vpc-web" {
   tags = {
     Name = "vpc-web"
   }
-}
 
+  lifecycle {
+    create_before_destroy = true # NOTE: this to remove SG when exec terraform destroy
+  }
+}

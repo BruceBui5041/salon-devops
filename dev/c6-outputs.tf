@@ -1,13 +1,20 @@
-# Terraform Output Values
-
-# EC2 Instance Public IP
 output "instance_publicip" {
   description = "EC2 Instance Public IP"
-  value       = aws_instance.myec2vm.public_ip
+  value       = aws_instance.salon-dev.public_ip
 }
 
-# EC2 Instance Public DNS
 output "instance_publicdns" {
   description = "EC2 Instance Public DNS"
-  value       = aws_instance.myec2vm.public_dns
+  value       = aws_instance.salon-dev.public_dns
+}
+
+output "private_key_pem" {
+  description = "Private key data in PEM format"
+  value       = tls_private_key.ssh_key.private_key_pem
+  sensitive   = true
+}
+
+output "public_key_openssh" {
+  description = "Public key data in OpenSSH authorized_keys format"
+  value       = tls_private_key.ssh_key.public_key_openssh
 }

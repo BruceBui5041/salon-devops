@@ -3,14 +3,14 @@
 variable "aws_region" {
   description = "Region in which AWS Resources to be created"
   type        = string
-  default     = "us-east-1"
+  default     = "ap-southeast-1"
 }
 
 # AWS EC2 Instance Type
 variable "instance_type" {
   description = "EC2 Instnace Type"
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 # AWS EC2 Instance Key Pair

@@ -1,11 +1,84 @@
-# EC2 Instance
-resource "aws_instance" "myec2vm" {
-  ami                    = data.aws_ami.amzlinux2.id
+resource "aws_instance" "salon-dev" {
+  ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
-  user_data              = file("${path.module}/app1-install.sh")
-  key_name               = var.instance_keypair
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+
   tags = {
-    "Name" = "EC2 Demo 2"
+    "Name" = "Salon Dev"
+  }
+
+  # Give time for the instance to fully initialize
+  provisioner "remote-exec" {
+    inline = ["echo 'Waiting for server to be initialized...'"]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = self.public_ip
+      timeout     = "4m"
+    }
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/app1-install.sh"
+    destination = "/home/ubuntu/app1-install.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = self.public_ip
+      timeout     = "4m"
+    }
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/docker-compose.yaml"
+    destination = "/home/ubuntu/docker-compose.yaml"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = self.public_ip
+      timeout     = "4m"
+    }
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/salon-be.Dockerfile"
+    destination = "/home/ubuntu/salon-be.Dockerfile"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = self.public_ip
+      timeout     = "4m"
+    }
+  }
+
+  # Execute the installation script
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /home/ubuntu/app1-install.sh",
+      "cd /home/ubuntu",
+      "sudo ./app1-install.sh"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = self.public_ip
+      timeout     = "4m"
+    }
+  }
+
+  # Wait for instance to be ready
+  provisioner "local-exec" {
+    command = "sleep 60"
   }
 }
