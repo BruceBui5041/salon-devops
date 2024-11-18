@@ -1,11 +1,14 @@
-resource "aws_instance" "salon-dev" {
+resource "aws_spot_instance_request" "salon-dev" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+  spot_price             = var.spot_price
+  spot_type              = var.spot_type
+  wait_for_fulfillment   = true
 
   tags = {
-    "Name" = "Salon Dev"
+    "Name" = "Salon Dev Spot Instance"
   }
 
   # Give time for the instance to fully initialize

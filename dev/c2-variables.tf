@@ -1,5 +1,3 @@
-# Input Variables
-# AWS Region
 variable "aws_region" {
   description = "Region in which AWS Resources to be created"
   type        = string
@@ -8,7 +6,7 @@ variable "aws_region" {
 
 # AWS EC2 Instance Type
 variable "instance_type" {
-  description = "EC2 Instnace Type"
+  description = "EC2 Instance Type"
   type        = string
   default     = "t3.small"
 }
@@ -20,4 +18,16 @@ variable "instance_keypair" {
   default     = "terraform-key"
 }
 
+# Spot Price
+variable "spot_price" {
+  description = "Maximum spot price for the instance"
+  type        = string
+  default     = "0.02"
+}
 
+# Spot Type
+variable "spot_type" {
+  description = "Spot type (one-time or persistent)"
+  type        = string
+  default     = "persistent"
+}
