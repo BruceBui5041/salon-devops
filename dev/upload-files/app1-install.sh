@@ -35,25 +35,9 @@ sudo usermod -aG docker ubuntu
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Create application directory
-sudo mkdir -p /app
-sudo chown -R ubuntu:ubuntu /app
-cd /app
-
-# Create environment file with secure permissions
-cat <<EOF > .env
-GITHUB_TOKEN=ghp_S2LM182i7JnpjpvsYc23sNJ7hX03yfJww
-REPO_URL=https://github.com/BruceBui5041/salon_be.git
-MYSQL_ROOT_PASSWORD=root
-EOF
-
 # Secure the .env file
 chmod 600 .env
-
-# Clone the repository (if needed)
-if [ ! -d "salon_be" ]; then
-    git clone \$REPO_URL
-fi
+source .env
 
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
@@ -62,7 +46,7 @@ while ! sudo docker info >/dev/null 2>&1; do
 done
 
 # Start containers
-sudo docker-compose up -d
+sudo docker-compose --env-file .env up --build -d
 
 # Display container status
 sudo docker-compose ps

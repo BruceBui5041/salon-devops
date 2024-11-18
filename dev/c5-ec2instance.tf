@@ -22,34 +22,8 @@ resource "aws_instance" "salon-dev" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/app1-install.sh"
-    destination = "/home/ubuntu/app1-install.sh"
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = tls_private_key.ssh_key.private_key_pem
-      host        = self.public_ip
-      timeout     = "4m"
-    }
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/docker-compose.yaml"
-    destination = "/home/ubuntu/docker-compose.yaml"
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = tls_private_key.ssh_key.private_key_pem
-      host        = self.public_ip
-      timeout     = "4m"
-    }
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/salon-be.Dockerfile"
-    destination = "/home/ubuntu/salon-be.Dockerfile"
+    source      = "${path.module}/upload-files/"
+    destination = "/home/ubuntu/"
 
     connection {
       type        = "ssh"

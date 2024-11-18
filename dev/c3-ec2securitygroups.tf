@@ -42,9 +42,9 @@ resource "aws_security_group" "vpc-web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    description = "Allow Port 2999"
-    from_port   = 2999
-    to_port     = 2999
+    description = "Allow Port 2888"
+    from_port   = 2888
+    to_port     = 2888
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
