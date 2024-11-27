@@ -6,49 +6,92 @@ sudo apt-get upgrade -y
 
 # Install prerequisites
 sudo apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
     curl \
-    gnupg \
-    lsb-release
+    wget \
+    git \
+    build-essential
 
-# Add Docker's official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Download Go 1.22
+wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
 
-# Set up the stable repository
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Remove any existing Go installation
+sudo rm -rf /usr/local/go
 
-# Install Docker CE
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+# Extract Go to /usr/local
+sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
 
-# Start and enable Docker service
-sudo systemctl start docker
-sudo systemctl enable docker
+# Set up Go environment variables
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
+echo 'export GOPATH=$HOME/go' >> ~/.profile
+echo 'export PATH=$PATH:$GOPATH/bin' >> ~/.profile
 
-# Add current user to docker group
-sudo usermod -aG docker ubuntu
+# Load the new environment variables
+source ~/.profile
 
-# Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Clean up downloaded archive
+rm go1.22.0.linux-amd64.tar.gz
 
-# Secure the .env file
-chmod 600 .env
-source .env
+# Source the existing .env file for git credentials
+if [ -f ".env" ]; then
+    source .env
+    
+    # Clone the repository using the token
+    if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$REPO_URL" ]; then
+        # Extract the repository name from the URL
+        REPO_NAME=$(basename "$REPO_URL" .git)
+        
+        # Clone the repository using the token
+        git clone https://${GITHUB_TOKEN}@${REPO_URL#https://}
+        
+        if [ $? -eq 0 ]; then
+            echo "Repository cloned successfully!"
+            
+            # Navigate to the repository directory
+            cd $REPO_NAME
+            
+            # Copy dev.env from the original directory to the repo directory
+            if [ -f "../dev.env" ]; then
+                cp ../dev.env .env
+                echo "Backend .env file updated with dev.env contents"
+                
+                # Build the Go application
+                echo "Building Go application..."
+                go mod download
+                go build -o app
+                
+                if [ $? -eq 0 ]; then
+                    echo "Go application built successfully!"
+                    
+                    # Start the application in the background
+                    echo "Starting the application..."
+                    nohup ./app > app.log 2>&1 &
+                    
+                    # Save the PID for later use if needed
+                    echo $! > app.pid
+                    echo "Application started with PID $(cat app.pid)"
+                else
+                    echo "Failed to build Go application"
+                    exit 1
+                fi
+            else
+                echo "dev.env not found in the original directory"
+                exit 1
+            fi
+            
+        else
+            echo "Failed to clone repository"
+            exit 1
+        fi
+    else
+        echo "GITHUB_TOKEN or REPO_URL not found in .env file"
+        exit 1
+    fi
+else
+    echo ".env file not found in current directory"
+    exit 1
+fi
 
-# Wait for Docker to be ready
-while ! sudo docker info >/dev/null 2>&1; do
-    echo "Waiting for Docker to be ready..."
-    sleep 1
-done
+# Verify Go installation
+go version
 
-# Start containers
-sudo docker-compose --env-file .env up --build -d
-
-# Display container status
-sudo docker-compose ps
-
-echo "Installation completed!"
+echo "Installation completed successfully!"

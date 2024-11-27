@@ -2,7 +2,7 @@ resource "aws_spot_instance_request" "salon-dev" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
-  vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
   spot_price             = var.spot_price
   spot_type              = var.spot_type
   wait_for_fulfillment   = true
