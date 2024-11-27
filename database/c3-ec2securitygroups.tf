@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "db_security_group" {
-  name        = "ec2-security-group"
+  name        = "salon-db-security-group"
   description = "Security group for EC2 instance"
 
   # SSH access
@@ -48,7 +48,7 @@ resource "aws_security_group" "db_security_group" {
   }
 
   tags = {
-    Name = "ec2-security-group"
+    Name = "salon-db-security-group"
   }
 
   lifecycle {

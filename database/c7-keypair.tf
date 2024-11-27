@@ -8,6 +8,7 @@ resource "aws_key_pair" "generated_key" {
   key_name   = "db-dev-key"
   public_key = tls_private_key.ssh_key.public_key_openssh
 
+
   # Save public key
   provisioner "local-exec" {
     command = "echo '${tls_private_key.ssh_key.public_key_openssh}' > db-dev-key.pub"
@@ -20,6 +21,6 @@ resource "aws_key_pair" "generated_key" {
 
   # Set permissions on private key
   provisioner "local-exec" {
-    command = "chmod 400 salon-dev-key.pem"
+    command = "chmod 400 db-dev-key.pem"
   }
 }
