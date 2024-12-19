@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# Prevent packagekit.service prompt by masking the service
+sudo systemctl mask packagekit
+sudo systemctl stop packagekit
+
 # Update system packages
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get upgrade -y
 
 # Install prerequisites
@@ -11,8 +15,14 @@ sudo apt-get install -y \
     git \
     build-essential
 
-# Download Go 1.22 for ARM64
+# Download Go 1.22 for ARM64 - fixed wget command
 wget https://go.dev/dl/go1.22.0.linux-arm64.tar.gz
+
+# Check if download was successful
+if [ ! -f "go1.22.0.linux-arm64.tar.gz" ]; then
+    echo "Failed to download Go"
+    exit 1
+fi
 
 # Remove any existing Go installation
 sudo rm -rf /usr/local/go
@@ -20,16 +30,23 @@ sudo rm -rf /usr/local/go
 # Extract Go to /usr/local
 sudo tar -C /usr/local -xzf go1.22.0.linux-arm64.tar.gz
 
-# Set up Go environment variables
-echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
-echo 'export GOPATH=$HOME/go' >> ~/.profile
-echo 'export PATH=$PATH:$GOPATH/bin' >> ~/.profile
+# Set up Go environment variables globally
+sudo tee /etc/profile.d/go.sh << 'EOF'
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+EOF
 
-# Load the new environment variables
-source ~/.profile
+# Make the script executable
+sudo chmod +x /etc/profile.d/go.sh
+
+# Source the Go environment immediately
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
 # Clean up downloaded archive
-rm go1.22.0.linux-arm64.tar.gz
+rm -f go1.22.0.linux-arm64.tar.gz
 
 # Add memory management for t4g.micro
 # Create a swap file to help with memory constraints
@@ -38,6 +55,12 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+# Verify Go installation is accessible
+if ! command -v go &> /dev/null; then
+    echo "Go installation failed or not accessible"
+    exit 1
+fi
 
 # Source the existing .env file for git credentials
 if [ -f ".env" ]; then
@@ -100,7 +123,7 @@ else
     exit 1
 fi
 
-# Verify Go installation
+# Final verification of Go installation
 go version
 
 echo "Installation completed successfully!"

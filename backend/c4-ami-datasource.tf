@@ -1,6 +1,6 @@
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["099720109477"] # Canonical's AWS account ID
+  owners      = ["099720109477"]
 
   filter {
     name   = "name"

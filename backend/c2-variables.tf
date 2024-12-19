@@ -8,7 +8,7 @@ variable "aws_region" {
 variable "instance_type" {
   description = "EC2 Instance Type"
   type        = string
-  default     = "t4g.micro"
+  default     = "t4g.nano"
 }
 
 # AWS EC2 Instance Key Pair
@@ -16,18 +16,4 @@ variable "instance_keypair" {
   description = "AWS EC2 Key Pair that need to be associated with EC2 Instance"
   type        = string
   default     = "terraform-key"
-}
-
-# Spot Price
-variable "spot_price" {
-  description = "Maximum spot price for the instance"
-  type        = string
-  default     = "0.02"
-}
-
-# Spot Type
-variable "spot_type" {
-  description = "Spot type (one-time or persistent)"
-  type        = string
-  default     = "persistent"
 }

@@ -17,17 +17,3 @@ variable "instance_keypair" {
   type        = string
   default     = "terraform-key"
 }
-
-# Spot Price
-variable "spot_price" {
-  description = "Maximum spot price for the instance"
-  type        = string
-  default     = "0.02"
-}
-
-# Spot Type
-variable "spot_type" {
-  description = "Spot type (one-time or persistent)"
-  type        = string
-  default     = "persistent"
-}
