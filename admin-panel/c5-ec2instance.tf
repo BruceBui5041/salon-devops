@@ -6,7 +6,7 @@ resource "aws_instance" "salon-dev" {
   vpc_security_group_ids = [data.aws_security_group.ec2_security_group.id]
 
   tags = {
-    "Name" = "Salon Dev Instance"
+    "Name" = "Salon Dev Admin Panel"
   }
 }
 
@@ -14,10 +14,10 @@ resource "aws_instance" "salon-dev" {
 resource "local_file" "env_file" {
   content = templatefile("${path.module}/upload-files/dev.env.tpl", {
     PUBLIC_IP      = aws_instance.salon-dev.public_ip
-    BE_API         = var.backend_ip
+    BE_API         = data.aws_eip.shared_eip.public_ip
     BASEPATH       = ""
     BASE_HOST_PATH = "/api/apps"
-    API_URL        = "http://${aws_instance.salon-dev.public_ip}:3000"
+    API_URL        = "${aws_instance.salon-dev.public_ip}:3000"
   })
   filename = "${path.module}/upload-files/dev.env"
 }

@@ -8,7 +8,7 @@ variable "aws_region" {
 variable "instance_type" {
   description = "EC2 Instance Type"
   type        = string
-  default     = "t3.micro"
+  default     = "t3.medium"
 }
 
 # AWS EC2 Instance Key Pair
@@ -18,8 +18,8 @@ variable "instance_keypair" {
   default     = "terraform-key"
 }
 
-variable "backend_ip" {
-  description = "Backend IP Address"
-  type        = string
-  default     = "13.250.50.169"
-}
+# variable "backend_ip" {
+#   description = "Backend IP Address"
+#   type        = string
+#   default     = "18.140.19.212"
+# }

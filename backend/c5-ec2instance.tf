@@ -5,7 +5,7 @@ resource "aws_instance" "salon-dev" {
   vpc_security_group_ids = [data.aws_security_group.ec2_security_group.id]
 
   tags = {
-    "Name" = "Salon Dev Instance"
+    "Name" = "Salon Dev Backend"
   }
 
   provisioner "remote-exec" {
@@ -48,4 +48,9 @@ resource "aws_instance" "salon-dev" {
       timeout     = "4m"
     }
   }
+}
+
+resource "aws_eip_association" "salon_dev_eip_assoc" {
+  instance_id   = aws_instance.salon-dev.id
+  allocation_id = data.aws_eip.shared_eip.id
 }

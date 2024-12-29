@@ -11,6 +11,7 @@ sudo apt-get install -y curl wget git build-essential
 # Install Node.js 20.x
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
+sudo npm install -g npm@11.0.0
 
 # Verify Node.js installation
 if ! command -v node &> /dev/null; then

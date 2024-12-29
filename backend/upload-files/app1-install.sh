@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Prevent packagekit.service prompt by masking the service
-sudo systemctl mask packagekit
-sudo systemctl stop packagekit
+sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/' /etc/needrestart/needrestart.conf
+export NEEDRESTART_MODE=a
+export DEBIAN_FRONTEND=noninteractive
 
 # Update system packages
 sudo apt-get update -y
