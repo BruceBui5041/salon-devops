@@ -30,6 +30,24 @@ resource "aws_security_group" "db_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Custom port 2888
+  ingress {
+    description = "Allow Port 2888"
+    from_port   = 2888
+    to_port     = 2888
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # gRPC port
+  ingress {
+    description = "Allow Port 50051"
+    from_port   = 50051
+    to_port     = 50051
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     description = "Allow Port 3306"
     from_port   = 3306
