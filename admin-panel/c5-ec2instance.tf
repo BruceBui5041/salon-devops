@@ -8,13 +8,21 @@ resource "aws_instance" "salon-dev" {
   tags = {
     "Name" = "Salon Dev Admin Panel"
   }
+
+  root_block_device {
+    volume_size = 8
+    volume_type = "gp3"
+    tags = {
+      Name = "Salon Admin Panel EBS"
+    }
+  }
 }
 
 # Create the env file after instance is created
 resource "local_file" "env_file" {
   content = templatefile("${path.module}/upload-files/dev.env.tpl", {
     PUBLIC_IP      = aws_instance.salon-dev.public_ip
-    BE_API         = data.aws_eip.shared_eip.public_ip
+    BE_API         = var.backend_ip
     BASEPATH       = ""
     BASE_HOST_PATH = "/api/apps"
     API_URL        = "${aws_instance.salon-dev.public_ip}:3000"

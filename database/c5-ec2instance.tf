@@ -8,6 +8,14 @@ resource "aws_instance" "salon-dev" {
     "Name" = "Salon Dev Database"
   }
 
+  root_block_device {
+    volume_size = 8
+    volume_type = "gp3"
+    tags = {
+      Name = "Salon Dev Database EBS"
+    }
+  }
+
   # Your existing provisioners remain the same
   provisioner "remote-exec" {
     inline = ["echo 'Waiting for server to be initialized...'"]

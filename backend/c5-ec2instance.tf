@@ -8,6 +8,14 @@ resource "aws_instance" "salon-dev" {
     "Name" = "Salon Dev Backend"
   }
 
+  root_block_device {
+    volume_size = 8
+    volume_type = "gp3"
+    tags = {
+      Name = "Salon Dev Backend EBS"
+    }
+  }
+
   provisioner "remote-exec" {
     inline = ["echo 'Waiting for server to be initialized...'"]
 
@@ -48,9 +56,4 @@ resource "aws_instance" "salon-dev" {
       timeout     = "4m"
     }
   }
-}
-
-resource "aws_eip_association" "salon_dev_eip_assoc" {
-  instance_id   = aws_instance.salon-dev.id
-  allocation_id = data.aws_eip.shared_eip.id
 }
