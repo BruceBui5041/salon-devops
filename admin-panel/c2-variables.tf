@@ -17,9 +17,3 @@ variable "instance_keypair" {
   type        = string
   default     = "terraform-key"
 }
-
-variable "backend_ip" {
-  description = "Backend IP Address"
-  type        = string
-  default     = "47.129.144.212"
-}

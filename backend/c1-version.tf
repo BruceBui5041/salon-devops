@@ -11,6 +11,11 @@ terraform {
       version = "~> 4.0"
     }
   }
+  backend "s3" {
+    bucket = "salon-terraform-state-dev"
+    key    = "backend/terraform.tfstate"
+    region = "ap-southeast-1"
+  }
 }
 
 # Provider Block

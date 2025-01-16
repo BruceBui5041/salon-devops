@@ -5,7 +5,7 @@ resource "aws_instance" "salon-dev" {
   vpc_security_group_ids = [data.aws_security_group.ec2_security_group.id]
 
   tags = {
-    "Name" = "Salon Dev Backend"
+    "Name" = module.common_vars.backend_instance_tag_name
   }
 
   root_block_device {
