@@ -13,7 +13,7 @@ terraform {
   }
   backend "s3" {
     bucket = "salon-terraform-state-dev"
-    key    = "database/terraform.tfstate"
+    key    = "vpc/terraform.tfstate"
     region = "ap-southeast-1"
   }
 }

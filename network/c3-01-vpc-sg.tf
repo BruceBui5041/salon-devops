@@ -9,6 +9,16 @@ resource "aws_security_group" "vpc_security_group" {
     Name = "salon-vpc-dev-sg"
   }
 
+
+  # test
+  ingress {
+    description = "HTTP for first instance"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # SSH access
   ingress {
     description = "Allow Port 22"
