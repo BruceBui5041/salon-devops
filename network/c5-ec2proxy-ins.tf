@@ -1,9 +1,8 @@
 resource "aws_instance" "proxy" {
-  ami                         = "ami-0c802847a7dd848c0"
-  instance_type               = "t2.nano"
-  subnet_id                   = aws_subnet.public.id
-  associate_public_ip_address = true                             # This should be true to access from internet
-  vpc_security_group_ids      = [aws_security_group.proxy_sg.id] # Use the correct security group
+  ami                    = "ami-0c802847a7dd848c0"
+  instance_type          = "t2.nano"
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.proxy_sg.id] # Use the correct security group
 
   user_data = <<-EOF
               #!/bin/bash

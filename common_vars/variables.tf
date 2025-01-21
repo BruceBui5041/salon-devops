@@ -1,7 +1,7 @@
 variable "backend_instance_tag_name" {
   description = "Backend Instance Tag Name"
   type        = string
-  default     = "Salon Dev Database"
+  default     = "Salon Dev Backend"
 }
 
 variable "backend_remote_state_bucket" {
