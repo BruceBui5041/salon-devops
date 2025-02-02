@@ -1,7 +1,7 @@
 resource "aws_instance" "proxy" {
   ami                    = "ami-0c802847a7dd848c0"
   instance_type          = "t2.nano"
-  subnet_id              = aws_subnet.public.id
+  subnet_id              = data.terraform_remote_state.network.outputs.aws_subnet_public_id
   vpc_security_group_ids = [aws_security_group.proxy_sg.id] # Use the correct security group
 
   user_data = <<-EOF
@@ -55,6 +55,4 @@ resource "aws_instance" "proxy" {
   tags = {
     Name = "proxy-instance"
   }
-
-  depends_on = [aws_internet_gateway.main]
 }

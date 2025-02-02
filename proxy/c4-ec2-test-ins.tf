@@ -1,7 +1,7 @@
 resource "aws_instance" "example" {
   ami           = "ami-0c802847a7dd848c0"
   instance_type = "t2.nano"
-  subnet_id     = aws_subnet.public.id
+  subnet_id     = data.terraform_remote_state.network.outputs.public_subnet_id
   #   associate_public_ip_address = false
   vpc_security_group_ids = [aws_security_group.example_sg.id] # Use the correct security group
 
@@ -45,6 +45,4 @@ resource "aws_instance" "example" {
               # Verify Apache is running
               sudo systemctl status httpd
               EOF
-
-  depends_on = [aws_internet_gateway.main]
 }

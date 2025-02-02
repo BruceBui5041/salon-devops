@@ -1,14 +1,9 @@
-output "aws_subnet_public_id" {
-  description = "vpc subnet public id"
-  value       = aws_subnet.public.id
+output "network_config_outputs" {
+  description = "Network Config State"
+  value       = data.terraform_remote_state.network.outputs
 }
 
-output "proxy_eip" {
-  description = "Proxy Elastic IP"
-  value       = aws_eip.vpc_eip.public_ip
-}
-
-output "instance_private_ip" {
-  description = "EC2 Instance Private IP"
-  value       = aws_instance.example.private_ip
+output "eip_public_ip" {
+  description = "Elastic IP Public IP"
+  value       = aws_eip.proxy_eip.public_ip
 }

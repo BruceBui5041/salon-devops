@@ -1,7 +1,7 @@
 resource "aws_security_group" "proxy_sg" {
   name        = "proxy-sg"
   description = "Security group for proxy instance"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.terraform_remote_state.network.outputs.network_main_vpc_id
 
   # SSH access
   ingress {

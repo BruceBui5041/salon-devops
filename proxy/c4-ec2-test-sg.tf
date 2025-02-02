@@ -1,14 +1,14 @@
 resource "aws_security_group" "example_sg" {
   name        = "example-sg"
   description = "Security group for example instance"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.terraform_remote_state.network.outputs.network_main_vpc_id
 
   ingress {
     description = "Allow HTTP from proxy instance"
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
-    cidr_blocks = [data.terraform_remote_state.network.public_subnet_cidr] # Allow access from the entire subnet
+    cidr_blocks = [data.terraform_remote_state.network.outputs.public_subnet_cidr] # Allow access from the entire subnet
   }
 
   egress {
