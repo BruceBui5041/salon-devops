@@ -1,4 +1,13 @@
+resource "local_file" "env_file" {
+  content = templatefile("${path.module}/upload-files/dev.env.tpl", {
+    EIP_PUBLIC_IP = data.terraform_remote_state.proxy_eip.outputs.eip_proxy_public_ip
+  })
+  filename = "${path.module}/upload-files/dev.env"
+}
+
 resource "aws_instance" "salon-dev" {
+  depends_on = [local_file.env_file]
+
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
@@ -18,15 +27,11 @@ resource "aws_instance" "salon-dev" {
   }
 }
 
-resource "local_file" "env_file" {
-  content = templatefile("${path.module}/upload-files/dev.env.tpl", {
-    EIP_PUBLIC_IP = data.terraform_remote_state.proxy.outputs.eip_proxy_public_ip
-  })
-  filename = "${path.module}/upload-files/dev.env"
-}
+
 
 
 resource "null_resource" "setup_instance" {
+  depends_on = [aws_instance.salon-dev]
   provisioner "remote-exec" {
     inline = ["echo 'Waiting for server to be initialized...'"]
 
@@ -34,7 +39,7 @@ resource "null_resource" "setup_instance" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = tls_private_key.ssh_key.private_key_pem
-      host        = self.public_ip
+      host        = aws_instance.salon-dev.public_ip
       timeout     = "4m"
     }
   }
@@ -47,7 +52,7 @@ resource "null_resource" "setup_instance" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = tls_private_key.ssh_key.private_key_pem
-      host        = self.public_ip
+      host        = aws_instance.salon-dev.public_ip
       timeout     = "4m"
     }
   }
@@ -63,7 +68,7 @@ resource "null_resource" "setup_instance" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = tls_private_key.ssh_key.private_key_pem
-      host        = self.public_ip
+      host        = aws_instance.salon-dev.public_ip
       timeout     = "4m"
     }
   }

@@ -1,7 +1,8 @@
 resource "aws_instance" "proxy" {
-  ami                    = "ami-0c802847a7dd848c0"
-  instance_type          = "t2.nano"
-  subnet_id              = data.terraform_remote_state.network.outputs.aws_subnet_public_id
+  ami           = "ami-0c802847a7dd848c0"
+  instance_type = "t2.nano"
+  subnet_id     = data.terraform_remote_state.network.outputs.aws_subnet_public_id
+
   vpc_security_group_ids = [aws_security_group.proxy_sg.id] # Use the correct security group
 
   user_data = <<-EOF
@@ -23,12 +24,12 @@ resource "aws_instance" "proxy" {
               # Create nginx configuration with debug logging
               cat > /etc/nginx/conf.d/proxy.conf <<'EOL'
               server {
-                  listen 3000;
+                  listen 2888;
                   server_name localhost;
                   error_log /var/log/nginx/error.log debug;
 
                   location / {
-                      proxy_pass http://${aws_instance.example.private_ip}:3000;
+                      proxy_pass http://${data.terraform_remote_state.backend.outputs.instance_publicip}:2888;
                       proxy_set_header Host $host;
                       proxy_set_header X-Real-IP $remote_addr;
                       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -49,7 +50,7 @@ resource "aws_instance" "proxy" {
 
               # Test network connectivity
               echo "Testing connection to example instance..."
-              nc -zv ${aws_instance.example.private_ip} 3000
+              nc -zv ${data.terraform_remote_state.backend.outputs.instance_publicip} 2888
               EOF
 
   tags = {

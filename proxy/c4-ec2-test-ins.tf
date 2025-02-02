@@ -18,11 +18,11 @@
 #               sudo yum install -y httpd
 
 #               # Update port configuration
-#               sudo sed -i 's/Listen 80/Listen 3000/' /etc/httpd/conf/httpd.conf
+#               sudo sed -i 's/Listen 80/Listen 2888/' /etc/httpd/conf/httpd.conf
 
-#               # Configure SELinux to allow Apache on port 3000
+#               # Configure SELinux to allow Apache on port 2888
 #               sudo yum install -y policycoreutils-python
-#               sudo semanage port -a -t http_port_t -p tcp 3000
+#               sudo semanage port -a -t http_port_t -p tcp 2888
 
 #               # Add test webpage
 #               echo "<h1>Hello from First EC2</h1>" > /var/www/html/index.html
@@ -38,7 +38,7 @@
 #               sudo systemctl start httpd
 #               sudo systemctl enable httpd
 
-#               # Allow port 3000 through firewall
+#               # Allow port 2888 through firewall
 #               sudo systemctl stop firewalld
 #               sudo systemctl disable firewalld
 

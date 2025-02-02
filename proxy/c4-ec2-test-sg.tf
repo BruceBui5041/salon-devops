@@ -5,8 +5,8 @@
 
 #   ingress {
 #     description = "Allow HTTP from proxy instance"
-#     from_port   = 3000
-#     to_port     = 3000
+#     from_port   = 2888
+#     to_port     = 2888
 #     protocol    = "tcp"
 #     cidr_blocks = [data.terraform_remote_state.network.outputs.public_subnet_cidr] # Allow access from the entire subnet
 #   }

@@ -28,3 +28,9 @@ variable "proxy_remote_state_key" {
   type        = string
   default     = "proxy/terraform.tfstate"
 }
+
+variable "proxy_eip_remote_state_key" {
+  description = "Proxy EIP Remote State Key"
+  type        = string
+  default     = "proxy_eip/terraform.tfstate"
+}

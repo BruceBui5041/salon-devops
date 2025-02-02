@@ -3,6 +3,10 @@ resource "aws_security_group" "proxy_sg" {
   description = "Security group for proxy instance"
   vpc_id      = data.terraform_remote_state.network.outputs.network_main_vpc_id
 
+  tags = {
+    Name = "proxy-security-group"
+  }
+
   # SSH access
   ingress {
     description = "Allow Port 22"
@@ -17,14 +21,6 @@ resource "aws_security_group" "proxy_sg" {
     description = "Allow Port 80"
     from_port   = 80
     to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Allow Port 3000"
-    from_port   = 3000
-    to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -71,9 +67,5 @@ resource "aws_security_group" "proxy_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "proxy-security-group"
   }
 }

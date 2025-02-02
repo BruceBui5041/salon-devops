@@ -17,3 +17,7 @@ output "network_remote_state_key" {
 output "proxy_remote_state_key" {
   value = var.proxy_remote_state_key
 }
+
+output "proxy_eip_remote_state_key" {
+  value = var.proxy_eip_remote_state_key
+}
