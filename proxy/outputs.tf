@@ -3,7 +3,7 @@ output "network_config_outputs" {
   value       = data.terraform_remote_state.network.outputs
 }
 
-output "eip_public_ip" {
+output "eip_proxy_public_ip" {
   description = "Elastic IP Public IP"
   value       = aws_eip.proxy_eip.public_ip
 }
