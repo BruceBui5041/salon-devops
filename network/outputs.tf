@@ -3,12 +3,18 @@ output "aws_subnet_public_id" {
   value       = aws_subnet.public.id
 }
 
-output "proxy_eip" {
-  description = "Proxy Elastic IP"
-  value       = aws_eip.vpc_eip.public_ip
+output "network_main_vpc_id" {
+  description = "main vpc id"
+  value       = aws_vpc.main.id
+
 }
 
-output "instance_private_ip" {
-  description = "EC2 Instance Private IP"
-  value       = aws_instance.example.private_ip
+output "public_subnet_cidr" {
+  description = "Public Subnet CIDR"
+  value       = var.public_subnet_cidr
+}
+
+output "public_subnet_id" {
+  description = "Public Subnet ID"
+  value       = aws_subnet.public.id
 }
