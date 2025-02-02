@@ -2,7 +2,8 @@ resource "aws_instance" "salon-dev" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
-  vpc_security_group_ids = [data.aws_security_group.ec2_security_group.id]
+  subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_id
+  vpc_security_group_ids = [aws_security_group.backend_sg.id] # Use the correct security group
 
   tags = {
     "Name" = module.common_vars.backend_instance_tag_name
@@ -15,7 +16,17 @@ resource "aws_instance" "salon-dev" {
       Name = "Salon Dev Backend EBS"
     }
   }
+}
 
+resource "local_file" "env_file" {
+  content = templatefile("${path.module}/upload-files/dev.env.tpl", {
+    EIP_PUBLIC_IP = data.terraform_remote_state.proxy.outputs.eip_proxy_public_ip
+  })
+  filename = "${path.module}/upload-files/dev.env"
+}
+
+
+resource "null_resource" "setup_instance" {
   provisioner "remote-exec" {
     inline = ["echo 'Waiting for server to be initialized...'"]
 
