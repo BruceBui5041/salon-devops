@@ -12,6 +12,7 @@ resource "aws_instance" "salon-dev" {
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
   subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_id
+  private_ip             = module.common_vars.backend_private_ip
   vpc_security_group_ids = [aws_security_group.backend_sg.id] # Use the correct security group
 
   tags = {
@@ -26,9 +27,6 @@ resource "aws_instance" "salon-dev" {
     }
   }
 }
-
-
-
 
 resource "null_resource" "setup_instance" {
   depends_on = [aws_instance.salon-dev]

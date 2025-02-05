@@ -29,7 +29,7 @@ resource "aws_instance" "proxy" {
                   error_log /var/log/nginx/error.log debug;
 
                   location / {
-                      proxy_pass http://${data.terraform_remote_state.backend.outputs.instance_publicip}:2888;
+                      proxy_pass http://${module.common_vars.backend_private_ip}:2888;
                       proxy_set_header Host $host;
                       proxy_set_header X-Real-IP $remote_addr;
                       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -50,7 +50,7 @@ resource "aws_instance" "proxy" {
 
               # Test network connectivity
               echo "Testing connection to example instance..."
-              nc -zv ${data.terraform_remote_state.backend.outputs.instance_publicip} 2888
+              nc -zv ${module.common_vars.backend_private_ip} 2888
               EOF
 
   tags = {

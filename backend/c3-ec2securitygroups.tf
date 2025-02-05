@@ -8,7 +8,7 @@ resource "aws_security_group" "backend_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [data.terraform_remote_state.network.outputs.public_subnet_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {

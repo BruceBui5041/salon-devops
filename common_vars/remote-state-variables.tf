@@ -1,9 +1,3 @@
-variable "backend_instance_tag_name" {
-  description = "Backend Instance Tag Name"
-  type        = string
-  default     = "Salon Dev Backend"
-}
-
 variable "remote_state_bucket" {
   description = "Backend Remote State Bucket Name"
   type        = string
