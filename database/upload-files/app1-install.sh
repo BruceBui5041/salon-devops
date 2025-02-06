@@ -33,7 +33,7 @@ bind-address    = 0.0.0.0
 symbolic-links=0
 EOF
 
-# Setup directories
+# Setup directories and permissions
 sudo mkdir -p /var/run/mysqld /var/log/mysql
 sudo chown -R mysql:mysql /var/run/mysqld /var/log/mysql
 
@@ -46,22 +46,24 @@ until sudo mysqladmin ping --silent; do
     sleep 2
 done
 
-# Configure root access
-sudo mysql --connect-expired-password <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+# Only initialize MySQL if it hasn't been initialized already
+if [ ! -f "/var/lib/mysql/mysql" ]; then
+    # Configure root access
+    sudo mysql --connect-expired-password <<EOF
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
+    CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
 EOF
 
-# Import databases
-for sql_file in db/*.sql; do
-    if [ -f "$sql_file" ]; then
-        echo "Importing $sql_file..."
-        sudo mysql --user=root --password="${MYSQL_ROOT_PASSWORD}" < "$sql_file"
-    fi
-done
-
+    # Import databases
+    for sql_file in db/*.sql; do
+        if [ -f "$sql_file" ]; then
+            echo "Importing $sql_file..."
+            sudo mysql --user=root --password="${MYSQL_ROOT_PASSWORD}" < "$sql_file"
+        fi
+    done
+fi
 
 sudo systemctl restart mysql
 echo "MySQL installation complete"
