@@ -1,6 +1,7 @@
 resource "local_file" "env_file" {
   content = templatefile("${path.module}/upload-files/dev.env.tpl", {
     EIP_PUBLIC_IP = data.terraform_remote_state.proxy_eip.outputs.eip_proxy_public_ip
+    DB_PRIVATE_IP = module.common_vars.db_private_ip
   })
   filename = "${path.module}/upload-files/dev.env"
 }

@@ -10,16 +10,16 @@ resource "aws_key_pair" "generated_key" {
 
   # Save public key
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.ssh_key.public_key_openssh}' > salon-dev-key.pub"
+    command = "printf '%s' '${tls_private_key.ssh_key.public_key_openssh}' > private-key/salon-dev-key.pub"
   }
 
   # Save private key
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.ssh_key.private_key_pem}' > salon-dev-key.pem"
+    command = "printf '%s' '${tls_private_key.ssh_key.private_key_pem}' > private-key/salon-dev-key.pem"
   }
 
   # Set permissions on private key
   provisioner "local-exec" {
-    command = "chmod 400 salon-dev-key.pem"
+    command = "chmod 700 private-key/salon-dev-key.pem && chmod 700 private-key/salon-dev-key.pub"
   }
 }
