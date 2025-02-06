@@ -11,6 +11,12 @@ variable "instance_type" {
   default     = "t3.nano"
 }
 
+variable "spot_price" {
+  description = "BE Spot Price"
+  type        = number
+  default     = 0.5
+}
+
 # AWS EC2 Instance Key Pair
 variable "instance_keypair" {
   description = "AWS EC2 Key Pair that need to be associated with EC2 Instance"
