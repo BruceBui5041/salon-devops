@@ -1,9 +1,23 @@
+resource "local_file" "env_file" {
+  content = templatefile("${path.module}/upload-files/dev.env.tpl", {
+    PUBLIC_IP      = data.terraform_remote_state.proxy_eip.outputs.eip_proxy_public_ip
+    BE_API         = module.common_vars.backend_private_ip
+    BASEPATH       = ""
+    BASE_HOST_PATH = "/api/apps"
+    API_URL        = "${data.terraform_remote_state.proxy_eip.outputs.eip_proxy_public_ip}:3000"
+  })
+  filename = "${path.module}/upload-files/dev.env"
+}
+
 # Create the instance first without any provisioners
 resource "aws_instance" "salon-dev" {
+  depends_on             = [local_file.env_file]
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.generated_key.key_name
-  vpc_security_group_ids = [data.aws_security_group.ec2_security_group.id]
+  subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_id
+  private_ip             = module.common_vars.admin_panel_private_ip
+  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
 
   tags = {
     "Name" = "Salon Dev Admin Panel"
@@ -19,20 +33,11 @@ resource "aws_instance" "salon-dev" {
 }
 
 # Create the env file after instance is created
-resource "local_file" "env_file" {
-  content = templatefile("${path.module}/upload-files/dev.env.tpl", {
-    PUBLIC_IP      = aws_instance.salon-dev.public_ip
-    BE_API         = var.backend_ip
-    BASEPATH       = ""
-    BASE_HOST_PATH = "/api/apps"
-    API_URL        = "${aws_instance.salon-dev.public_ip}:3000"
-  })
-  filename = "${path.module}/upload-files/dev.env"
-}
+
 
 # Handle all provisioning in a null resource
 resource "null_resource" "setup_instance" {
-  depends_on = [aws_instance.salon-dev, local_file.env_file]
+  depends_on = [aws_instance.salon-dev]
 
   # Wait for instance to be ready
   provisioner "remote-exec" {
