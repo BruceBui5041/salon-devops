@@ -9,3 +9,9 @@ variable "proxy_ins_type" {
   type        = string
   default     = "t3.nano"
 }
+
+variable "spot_price" {
+  description = "Proxy Spot Price"
+  type        = number
+  default     = 0.5
+}
