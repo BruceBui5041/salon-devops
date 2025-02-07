@@ -7,5 +7,5 @@ variable "aws_region" {
 variable "proxy_ins_type" {
   description = "EC2 Instance Type"
   type        = string
-  default     = "t2.nano"
+  default     = "t3.nano"
 }
