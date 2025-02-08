@@ -20,57 +20,53 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Set up swap for t4g.micro
-sudo fallocate -l 5G /swapfile
+sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-# Clone and set up repository
-if [ -f ".env" ]; then
-    source .env
-    
-    if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$REPO_URL" ]; then
-        REPO_NAME=$(basename "$REPO_URL" .git)
-        git clone https://${GITHUB_TOKEN}@${REPO_URL#https://}
-        
+# Deploy Next.js application
+if [ -f ".dev.env" ]; then
+    tar -xzf project.tar.gz
+    rm project.tar.gz
+
+    # Check if .next directory exists
+    if [ -d ".next" ]; then
+        echo "Found .next bundle"
+
+        # Install production dependencies
+        echo "Installing production dependencies..."
+        # Override the postinstall script to only run prisma generate
+        npm pkg set scripts.postinstall="prisma generate"
+        npm ci --only=production
+
+        # Install production dependencies
+        cp .dev.env .env
+        echo "Environment configured"
+
         if [ $? -eq 0 ]; then
-            cd $REPO_NAME
+            echo "Dependencies installed successfully"
             
-            if [ -f "../.dev.env" ]; then
-                cp ../.dev.env .env
-                echo "Environment configured"
-                
-                # Install dependencies and build
-                sudo npm install
-                sudo npm run build
-                
-                if [ $? -eq 0 ]; then
-                    # Start Next.js in production
-                    sudo npm install -g pm2
-                    sudo pm2 start npm --name "nextjs" -- start
-                    
-                    # Save PM2 process list
-                    sudo pm2 save
-                    
-                    # Setup PM2 startup script
-                    sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
-                    
-                    echo "Next.js application deployed successfully!"
-                else
-                    echo "Build failed"
-                    exit 1
-                fi
-            else
-                echo "dev.env not found"
-                exit 1
-            fi
+            # Install and setup PM2
+            sudo npm install -g pm2
+            
+            # Start Next.js in production
+            sudo pm2 start npm --name "nextjs" -- start
+            
+            # Save PM2 process list
+            sudo pm2 save
+            
+            # Setup PM2 startup script
+            sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
+            
+            echo "Next.js application deployed successfully!"
         else
-            echo "Repository clone failed"
+            echo "Failed to install dependencies"
             exit 1
         fi
     else
-        echo "Missing GitHub credentials"
+        echo ".next bundle not found"
         exit 1
     fi
 else

@@ -78,26 +78,26 @@ tags = {
 
 
 
-# # Handle all provisioning in a null resource
-# resource "null_resource" "setup_instance" {
-#   depends_on = [aws_spot_instance_request.salon_admin_dev]
-#   triggers = {
-#     # Track both the spot request ID and instance ID
-#     spot_request_id = aws_spot_instance_request.salon_admin_dev.id
-#     instance_id     = aws_spot_instance_request.salon_admin_dev.spot_instance_id
-#     # Track the instance state
-#     instance_state = aws_spot_instance_request.salon_admin_dev.instance_state
-#   }
+# Handle all provisioning in a null resource
+resource "null_resource" "setup_instance" {
+  depends_on = [aws_spot_instance_request.salon_admin_dev]
+  triggers = {
+    # Track both the spot request ID and instance ID
+    spot_request_id = aws_spot_instance_request.salon_admin_dev.id
+    instance_id     = aws_spot_instance_request.salon_admin_dev.spot_instance_id
+    # Track the instance state
+    instance_state = aws_spot_instance_request.salon_admin_dev.instance_state
+  }
 
-#   provisioner "file" {
-#     source      = "${path.module}/upload-files/"
-#     destination = "/home/ubuntu/"
-#     connection {
-#       type        = "ssh"
-#       user        = "ubuntu"
-#       private_key = tls_private_key.ssh_key.private_key_pem
-#       host        = aws_spot_instance_request.salon_admin_dev.public_ip
-#       timeout     = "4m"
-#     }
-#   }
-# }
+  provisioner "file" {
+    source      = "${path.module}/upload-files/"
+    destination = "/home/ubuntu/"
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = tls_private_key.ssh_key.private_key_pem
+      host        = aws_spot_instance_request.salon_admin_dev.public_ip
+      timeout     = "4m"
+    }
+  }
+}
