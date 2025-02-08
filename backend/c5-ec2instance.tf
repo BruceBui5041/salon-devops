@@ -64,13 +64,13 @@ tags = {
 #   provisioner "remote-exec" {
 #     inline = [
 #       "sudo tail -f /var/log/cloud-init-output.log",
-#     ]
+#    ]
 
 #     connection {
 #       type        = "ssh"
 #       user        = "ubuntu"
 #       private_key = tls_private_key.ssh_key.private_key_pem
-#       host        = aws_spot_instance_request.salon_dev.public_ip
+#       host        = aws_spot_instance_request.salon_dev.spot_instance_id
 #       timeout     = "4m"
 #     }
 #   }
