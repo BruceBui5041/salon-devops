@@ -7,7 +7,10 @@ resource "aws_eip_association" "eip_assoc" {
 # null resource to handle EIP association
 resource "null_resource" "eip_assoc_handler" {
   triggers = {
-    instance_id = aws_spot_instance_request.proxy.spot_instance_id
+    spot_request_id = aws_spot_instance_request.proxy.id
+    instance_id     = aws_spot_instance_request.proxy.spot_instance_id
+    # Track the instance state
+    instance_state = aws_spot_instance_request.proxy.instance_state
   }
 
   provisioner "local-exec" {
