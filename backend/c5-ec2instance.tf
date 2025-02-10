@@ -72,8 +72,8 @@ resource "null_resource" "setup_instance" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/upload-files/app"
-    destination = "/home/ubuntu/app"
+    source      = "${path.module}/upload-files/project.tar.gz"
+    destination = "/home/ubuntu/project.tar.gz"
     connection {
       type        = "ssh"
       user        = "ubuntu"

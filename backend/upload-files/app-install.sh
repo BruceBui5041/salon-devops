@@ -64,6 +64,9 @@ fi
 
 # Source the existing dev.env file
 if [ -f "dev.env" ]; then
+    tar -xzf project.tar.gz
+    rm project.tar.gz
+
     cp dev.env .env
     echo "Backend .env file updated with dev.env contents"
     
