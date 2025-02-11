@@ -64,7 +64,7 @@ resource "aws_spot_instance_request" "salon_admin_dev" {
 )
 
 root_block_device {
-  volume_size = 12
+  volume_size = 8
   volume_type = "gp3"
   tags = {
     Name = "Salon Admin Panel EBS"
