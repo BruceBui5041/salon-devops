@@ -27,7 +27,7 @@ DATABASE_URL=
 # -----------------------------------------------------------------------------
 BASE_HOST_PATH=/api/apps
 BE_API_PATH=http://${BE_API}:2888${BASEPATH}
-NEXT_PUBLIC_BE_API_PATH=http://${BE_API}:2888${BASEPATH}
+NEXT_PUBLIC_BE_API_PATH=http://${PUBLIC_IP}:2888${BASEPATH}
 
 # SSR API URL
 API_URL=http://${API_URL}${BASEPATH}/api
