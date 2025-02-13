@@ -2,7 +2,7 @@
 REST_PORT=2888
 
 # allow origins
-ALLOW_ORIGINS=http://${EIP_PUBLIC_IP}:3000
+ALLOW_ORIGINS=http://${EIP_PUBLIC_IP} http://${EIP_PRIVATE_IP}
 
 # DB
 DB_USER=root
