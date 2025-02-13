@@ -22,6 +22,7 @@ resource "aws_spot_instance_request" "proxy" {
   instance_type          = var.proxy_ins_type
   key_name               = aws_key_pair.generated_key.key_name
   subnet_id              = data.terraform_remote_state.network.outputs.aws_subnet_public_id
+  private_ip             = module.common_vars.proxy_private_ip
   vpc_security_group_ids = [aws_security_group.proxy_sg.id]
 
   spot_type            = "persistent"
