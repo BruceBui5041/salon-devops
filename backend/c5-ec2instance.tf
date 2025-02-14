@@ -22,6 +22,7 @@ resource "aws_spot_instance_request" "salon_dev" {
     ${templatefile("${path.module}/upload-files/dev.env.tpl", {
     EIP_PUBLIC_IP          = data.terraform_remote_state.proxy_eip.outputs.eip_proxy_public_ip
     EIP_PRIVATE_IP         = module.common_vars.proxy_private_ip
+    ADMIN_PANEL_PRIVATE_IP = module.common_vars.admin_panel_private_ip
     DB_PRIVATE_IP          = module.common_vars.db_private_ip
     DB_USER                = var.db_user
     DB_PASSWORD            = var.db_password
