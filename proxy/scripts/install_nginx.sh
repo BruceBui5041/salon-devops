@@ -31,6 +31,7 @@ http {
                       '"\$http_user_agent" "\$http_x_forwarded_for"';
 
     access_log  /var/log/nginx/access.log  main;
+    client_max_body_size 50M;
 
     sendfile            on;
     tcp_nopush          on;
@@ -65,6 +66,7 @@ server {
     listen 2888;
     server_name localhost;
     error_log /var/log/nginx/error.log debug;
+    client_max_body_size 50M;
 
     location / {
         proxy_pass http://${backend_private_ip}:2888;
@@ -75,6 +77,7 @@ server {
         proxy_connect_timeout 300;
         proxy_send_timeout 300;
         proxy_read_timeout 300;
+        client_max_body_size 50M;
 
         # WebSocket specific settings
         proxy_http_version 1.1;
@@ -97,6 +100,12 @@ server {
         proxy_connect_timeout 300;
         proxy_send_timeout 300;
         proxy_read_timeout 300;
+        client_max_body_size 50M;
+
+        # WebSocket specific settings
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
     }
 }
 EOL
