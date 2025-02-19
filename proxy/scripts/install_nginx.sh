@@ -3,8 +3,8 @@
 # Update system packages
 sudo yum update -y
 
-# Install troubleshooting tools
-sudo yum install -y telnet nc
+# Install AWS CLI and tools
+sudo yum install -y aws-cli telnet nc
 
 # Install nginx and stream module
 sudo amazon-linux-extras enable nginx1

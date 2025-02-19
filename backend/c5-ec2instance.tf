@@ -1,8 +1,9 @@
 # Spot Instance Request
 resource "aws_spot_instance_request" "salon_dev" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type
-  key_name               = aws_key_pair.generated_key.key_name
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+  key_name      = aws_key_pair.generated_key.key_name
+
   subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_id
   private_ip             = module.common_vars.backend_private_ip
   vpc_security_group_ids = [aws_security_group.backend_sg.id]
